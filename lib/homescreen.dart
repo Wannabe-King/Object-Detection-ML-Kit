@@ -3,9 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:object_dection_flutter/camscreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +22,19 @@ class WelcomeScreen extends StatelessWidget {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const CameraScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CameraScreen()),
+                );
               },
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 15,
+                ),
               ),
               child: const Text('Start Scanning'),
-            )
+            ),
           ],
         ),
       ),

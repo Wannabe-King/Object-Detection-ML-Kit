@@ -1,6 +1,6 @@
-import 'package:flickapp/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:object_dection_flutter/homescreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
+      home: HomeScreen(),
     );
   }
 }

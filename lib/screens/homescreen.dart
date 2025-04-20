@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:object_dection_flutter/camscreen.dart';
+import 'package:object_dection_flutter/screens/camscreen.dart';
 import 'package:object_dection_flutter/utils/button.dart';
 
 class HomeScreen extends StatelessWidget {

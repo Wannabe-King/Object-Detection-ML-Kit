@@ -27,33 +27,30 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: _buildButtonStyle(context),
-      child: Text(
-        text,
-        style: _buildTextStyle(context),
-      ),
+      child: Text(text, style: _buildTextStyle(context)),
     );
   }
 
   ButtonStyle _buildButtonStyle(BuildContext context) {
     final defaultStyle = ButtonStyle(
-      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+      backgroundColor: WidgetStateProperty.resolveWith<Color>(
         (states) => _getBackgroundColor(states, context),
       ),
-      foregroundColor: MaterialStateProperty.all(textColor),
-      padding: MaterialStateProperty.all(padding),
-      shape: MaterialStateProperty.all(
+      foregroundColor: WidgetStateProperty.all(textColor),
+      padding: WidgetStateProperty.all(padding),
+      shape: WidgetStateProperty.all(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
         ),
       ),
-      elevation: MaterialStateProperty.all(0),
+      elevation: WidgetStateProperty.all(0),
     );
 
     return defaultStyle.merge(style);
   }
 
-  Color _getBackgroundColor(Set<MaterialState> states, BuildContext context) {
-    if (states.contains(MaterialState.disabled)) {
+  Color _getBackgroundColor(Set<WidgetState> states, BuildContext context) {
+    if (states.contains(WidgetState.disabled)) {
       return Theme.of(context).disabledColor;
     }
     return backgroundColor ?? Theme.of(context).primaryColor;

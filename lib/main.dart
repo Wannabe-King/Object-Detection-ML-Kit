@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:object_dection_flutter/homescreen.dart';
+import 'package:object_dection_flutter/screens/homescreen.dart';
 
 void main() {
   runApp(const MyApp());

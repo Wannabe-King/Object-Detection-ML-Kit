@@ -6,9 +6,12 @@ plugins {
 
 dependencies {
     // ML Kit Object Detection
-    implementation("com.google.mlkit:object-detection:17.0.0")
+    implementation("com.google.mlkit:object-detection:17.0.1")
+    implementation("com.google.mlkit:object-detection-custom:17.0.1")
 
     // CameraX core libraries
+
+
     val camVer = "1.3.0"
     implementation("androidx.camera:camera-core:$camVer")
     implementation("androidx.camera:camera-camera2:$camVer")

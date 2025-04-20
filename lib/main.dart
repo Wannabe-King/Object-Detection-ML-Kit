@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:object_dection_flutter/screens/homescreen.dart';
+import 'package:object_dection_flutter/screens/home/homescreen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

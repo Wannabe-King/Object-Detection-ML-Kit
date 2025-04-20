@@ -25,7 +25,7 @@ class MainActivity : FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "startObjectDetection") {
+            if (call.method == "ObjectDetection") {
                 startCamera()
                 result.success(listOf("Detection started (Android)"))
             } else {

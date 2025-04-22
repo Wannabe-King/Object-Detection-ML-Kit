@@ -114,7 +114,7 @@ class _CameraScreenState extends State<CameraScreen> {
     }
     setState(() => _isDetecting = !_isDetecting);
   }
-
+ /// Starts or stops object detection via native method
   Future<void> _switchCamera() async {
     if (_cameras.length < 2) return;
     
@@ -122,7 +122,7 @@ class _CameraScreenState extends State<CameraScreen> {
     await _controller?.dispose();
     await _initializeCamera();
   }
-
+ /// Stops detection if it is running
   Future<void> _stopDetection() async {
     if (_isDetecting) {
       await _methodChannel.invokeMethod('stopDetection');
@@ -137,7 +137,7 @@ class _CameraScreenState extends State<CameraScreen> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
+ /// UI Builder
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -160,6 +160,7 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
+/// Paints bounding boxes and labels on screen
   Widget _buildDetectionOverlay() {
     return Positioned.fill(
       child: CustomPaint(
@@ -172,6 +173,8 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
+
+/// Floating control buttons (start/stop detection, switch camera)
   Widget _buildControlPanel() {
     return Align(
       alignment: Alignment.bottomCenter,
@@ -199,6 +202,8 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
+
+ /// Displays a dialog showing top 3 detected objects with confidence
   void _showDetectionInfo() {
     showDialog(
       context: context,
@@ -226,6 +231,8 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 }
 
+
+/// Painter class that draws bounding boxes and labels over the camera preview
 class ObjectDetectionPainter extends CustomPainter {
   final List<Map<String, dynamic>> detectedObjects;
   final Size previewSize;
@@ -255,7 +262,7 @@ class ObjectDetectionPainter extends CustomPainter {
       paint.color = _getColorForLabel(obj['label'] as String);
       canvas.drawRect(rect, paint);
 
-      // Draw label text
+      // Draw object label and confidence
       final textSpan = TextSpan(
         text: '${obj['label']} ${(obj['confidence'] * 100).toStringAsFixed(1)}%',
         style: TextStyle(
@@ -272,7 +279,7 @@ class ObjectDetectionPainter extends CustomPainter {
       textPainter.paint(canvas, Offset(rect.left, rect.top - 20));
     }
   }
-
+ /// Assigns a unique color per label
   Color _getColorForLabel(String label) {
     const colors = [
       Colors.red,
@@ -289,6 +296,8 @@ class ObjectDetectionPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
+
+/// Optional model class for structured detection object (not directly used)
 class DetectedObject {
   final String label;
   final double confidence;

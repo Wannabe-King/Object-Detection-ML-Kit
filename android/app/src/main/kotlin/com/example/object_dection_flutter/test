@@ -17,31 +17,25 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MainActivity : FlutterActivity() {
-    // Constants for communication channels
-    private val CHANNEL = "object_detector"            // MethodChannel name
-    private val EVENT_CHANNEL = "object_detector_events" // EventChannel name
-
-    private lateinit var cameraExecutor: ExecutorService // Background thread for camera analysis
-    private var eventSink: EventChannel.EventSink? = null // Sends detection data back to Flutter
-
+    private val CHANNEL = "object_detector"
+    private val EVENT_CHANNEL = "object_detector_events"
+    private lateinit var cameraExecutor: ExecutorService
+    private var eventSink: EventChannel.EventSink? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-         // Handle method calls from Flutter (initialize, startDetection, stopDetection)
+        // Method Channel for commands from Flutter
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
-                // Set up a background thread executor
                 "initialize" -> {
                     cameraExecutor = Executors.newSingleThreadExecutor()
                     result.success(null)
                 }
-                // Start camera and object detection
                 "startDetection" -> {
                     startCamera()
                     result.success(null)
                 }
-                // Shut down camera
                 "stopDetection" -> {
                     stopCamera()
                     result.success(null)
@@ -70,29 +64,22 @@ class MainActivity : FlutterActivity() {
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-             // Preview use case (not displayed but needed)
             val preview = Preview.Builder().build()
-
-            // Image analysis use case with a custom analyzer
             val imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
-                    // Set the custom object detection analyzer
                     it.setAnalyzer(cameraExecutor, ObjectDetectionAnalyzer(this) { detectedObjects ->
-                        // Send detection results back to Flutter via EventSink
                         runOnUiThread {
                             eventSink?.success(detectedObjects)
                         }
                     })
                 }
-             // Choose the back camera
+
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
-                // Unbind any previously bound use cases
                 cameraProvider.unbindAll()
-                // Bind preview and analysis to the lifecycle
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageAnalyzer
                 )
@@ -107,7 +94,6 @@ class MainActivity : FlutterActivity() {
         eventSink?.endOfStream()
     }
 
-    // Ensure cleanup on activity destro
     override fun onDestroy() {
         super.onDestroy()
         stopCamera()
@@ -120,9 +106,9 @@ class ObjectDetectionAnalyzer(
 ) : ImageAnalysis.Analyzer {
     private val detector = ObjectDetection.getClient(
         ObjectDetectorOptions.Builder()
-            .setDetectorMode(ObjectDetectorOptions.STREAM_MODE) // Stream mode = real-time
-            .enableMultipleObjects()        // Detect more than 1 object
-            .enableClassification()         // Try to classify them
+            .setDetectorMode(ObjectDetectorOptions.STREAM_MODE)
+            .enableMultipleObjects()
+            .enableClassification()
             .build()
     )
 
@@ -132,10 +118,8 @@ class ObjectDetectionAnalyzer(
         if (mediaImage != null) {
             val inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
-            // Run ML Kit object detection
             detector.process(inputImage)
                 .addOnSuccessListener { results ->
-                    // Convert detection results to a list of maps
                     val detectedObjects = results.map { obj ->
                         mapOf<String, Any>(
                         "label" to (obj.labels.firstOrNull()?.text ?: "Unknown"),
@@ -149,7 +133,7 @@ class ObjectDetectionAnalyzer(
                         "trackingId" to (obj.trackingId ?: -1)
                         )
                     }
-                    // Pass results back to the MainActivity via callback
+                    
                     onDetectionResult(detectedObjects)
                 }
                 .addOnFailureListener {
